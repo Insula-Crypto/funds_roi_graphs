@@ -1,0 +1,30 @@
+name: ROI
+
+on:
+  push:
+    branches: master
+  schedule:
+    - cron:  '0 1/16 * * *'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-python@v1
+    - uses: BSFishy/pip-action@v1
+      with:
+        packages: |
+          requests
+          pandas
+    - run: python funds_roi_graph.py
+    
+    - run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git commit -m "Updated fund ROI data" -a
+    
+    - uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
