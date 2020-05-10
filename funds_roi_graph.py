@@ -1,6 +1,6 @@
 import requests
 import pandas as pd
-from datetime import datetime
+from datetime import datetime 
 
 def fnd():
     sent = requests.get('https://api.bloxy.info/widget/address_value_daily?address=0xCB60D600160D005845Ec999f64266D5608fd8943&key=ACCunOMWYpmCp&format=table').json()
@@ -30,7 +30,6 @@ def main():
 
     now = datetime.now()
     dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
-
     f = open("run_log.txt","a")
     f.write("Ran at " + dt_string + "\n")
     f.close() 
