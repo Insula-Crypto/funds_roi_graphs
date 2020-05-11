@@ -23,10 +23,18 @@ def sark():
     df = df[['Date', 'Total Gain/Loss', 'Unrealized Gain/Loss', 'Realized Gain/Loss']]
     df.to_csv('Sark.csv', index=False)
 
+def madeira():
+    sent = requests.get('https://api.bloxy.info/widget/address_value_daily?address=0x392e693e0222e07e88fbf2cf7107e2dfac8af678&key=ACCunOMWYpmCp&format=table').json()
+    df = pd.DataFrame(sent)
+    df.rename(columns={0:'Date', 7:'Total Gain/Loss', 8:'Unrealized Gain/Loss', 9:'Realized Gain/Loss'}, inplace=True)
+    df = df[['Date', 'Total Gain/Loss', 'Unrealized Gain/Loss', 'Realized Gain/Loss']]
+    df.to_csv('Madeira.csv', index=False)
+
 def main():
     fnd()
     elba()
     sark()
+    madeira()
 
     now = datetime.now()
     dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
