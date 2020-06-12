@@ -3,11 +3,17 @@ import pandas as pd
 from datetime import datetime 
 
 def get_fund_ROI(address, file_name):
-    sent = requests.get('https://api.bloxy.info/widget/address_value_daily?address=' + address + '&key=ACCunOMWYpmCp&format=table').json()
-    df = pd.DataFrame(sent)
-    df.rename(columns={0:'Date', 11: 'ROI'}, inplace=True)
-    df['ROI'] = df.ROI.cumsum()
-    df = df[['Date', 'ROI']]
+    sent = requests.get('https://api.bloxy.info/widget/address_value_daily?address=' + address + '&currency=ETH&key=ACCunOMWYpmCp&format=table&price_currency=USD').json()
+    df1 = pd.DataFrame(sent)
+    df1.rename(columns={0:'Date-USD', 11: 'ROI'}, inplace=True)
+    df1['ROI-USD'] = df1.ROI.cumsum()
+
+    sent = requests.get('https://api.bloxy.info/widget/address_value_daily?address=' + address + '&currency=ETH&key=ACCunOMWYpmCp&format=table&price_currency=ETH').json()
+    df2 = pd.DataFrame(sent)
+    df2.rename(columns={0:'Date', 11: 'ROI'}, inplace=True)
+    df2['ROI-ETH'] = df2.ROI.cumsum()
+
+    df = pd.concat([df1, df2], axis=1, sort=False)[['Date', 'ROI-USD', 'ROI-ETH']]
     df.to_csv(file_name, index=False)
 
 def get_fund_gain_loss(address, file_name):
