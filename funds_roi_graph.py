@@ -25,8 +25,8 @@ def get_fund_gain_loss(address, file_name):
 
 def main():
     get_fund_ROI('0xCB60D600160D005845Ec999f64266D5608fd8943', 'Fnd.csv')
-    get_fund_ROI('0x9f73d7874aa731a6e3185e2fdc201a07c736f45b', 'Elba.csv')
-    get_fund_ROI('0x10603633e9a021b8dbc1f0ccb172178b07dfb1f4', 'Sark.csv')
+    ## get_fund_ROI('0x9f73d7874aa731a6e3185e2fdc201a07c736f45b', 'Elba.csv')
+    ## get_fund_ROI('0x10603633e9a021b8dbc1f0ccb172178b07dfb1f4', 'Sark.csv')
     get_fund_ROI('0x392e693e0222e07e88fbf2cf7107e2dfac8af678', 'Madeira.csv')
 
     now = datetime.now()
