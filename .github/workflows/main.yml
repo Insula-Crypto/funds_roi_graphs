@@ -18,6 +18,9 @@ jobs:
         packages: |
           requests
           pandas
+          yfinance
+          pycoingecko
+          numpy
     - run: python funds_roi_graph.py
     
     - run: |
