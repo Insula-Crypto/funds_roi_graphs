@@ -1,6 +1,9 @@
 import requests
 import pandas as pd
-from datetime import datetime 
+from datetime import datetime
+import yfinance as yf
+import numpy as np
+from pycoingecko import CoinGeckoAPI
 
 def get_fund_ROI(address, file_name):
     sent = requests.get('https://api.bloxy.info/widget/address_value_daily?address=' + address + '&currency=ETH&key=ACCunOMWYpmCp&format=table&price_currency=USD').json()
@@ -14,20 +17,46 @@ def get_fund_ROI(address, file_name):
     df2['ROI-ETH'] = df2.ROI.cumsum()
 
     df = pd.concat([df1, df2], axis=1, sort=False)[['Date', 'ROI-USD', 'ROI-ETH']]
-    df.to_csv(file_name, index=False)
+    df = df.set_index('Date')
+    df.index = pd.to_datetime(df.index)
+    
+    cmc = yf.Ticker("^CMC200")
 
-def get_fund_gain_loss(address, file_name):
-    sent = requests.get('https://api.bloxy.info/widget/address_value_daily?address=' + address + '&key=ACCunOMWYpmCp&format=table').json()
-    df = pd.DataFrame(sent)
-    df.rename(columns={0:'Date', 7:'Total Gain/Loss', 8:'Unrealized Gain/Loss', 9:'Realized Gain/Loss'}, inplace=True)
-    df = df[['Date', 'Total Gain/Loss', 'Unrealized Gain/Loss', 'Realized Gain/Loss']]
-    df.to_csv(file_name, index=False)
+    hist = cmc.history(period="max")[['Open']]
+    hist['Open'] = (np.where(hist['Open'] < 100, hist['Open'] * 10, hist['Open']))
 
+    df = pd.concat([df, hist], axis=1, sort=False)
+    df = df.interpolate(axis=0).dropna(subset=['ROI-USD'])
+    
+    start_cmc200 = df.head(1)['Open'][0]
+    df['CMC200-USD'] = (((df['Open'] - start_cmc200) / start_cmc200)*100)
+    df = df[['ROI-USD', 'ROI-ETH', 'CMC200-USD']]
+    
+    cg = CoinGeckoAPI()
+
+    data = cg.get_coin_market_chart_by_id('bitcoin', 'usd', 500)
+
+    dates = [datetime.fromtimestamp(data['prices'][i][0] / 1000).strftime('%Y-%m-%d') for i in range(len(data['prices']))]
+    price  = [data['prices'][i][1] for i in range(len(data['prices']))]
+
+    df_data = {'BTC-ETH': price, 'Date' : dates} 
+    df_btc = pd.DataFrame(df_data)
+    df_btc = df_btc.set_index('Date')
+    df_btc.index = pd.to_datetime(df_btc.index)
+    
+    df = pd.concat([df, df_btc], axis=1, sort=False)
+    df = df.dropna(subset=['ROI-USD'])
+    
+    start_btc = df.head(1)['BTC-ETH'][0]
+    df['BTC-ETH'] = (((df['BTC-ETH'] - start_btc) / start_btc)*100)
+    
+    df.drop(df.tail(1).index,inplace=True)
+    
+    df.to_csv(file_name, index=True)
+    
 def main():
     get_fund_ROI('0xCB60D600160D005845Ec999f64266D5608fd8943', 'Fnd.csv')
-    ## get_fund_ROI('0x9f73d7874aa731a6e3185e2fdc201a07c736f45b', 'Elba.csv')
-    ## get_fund_ROI('0x10603633e9a021b8dbc1f0ccb172178b07dfb1f4', 'Sark.csv')
-    get_fund_ROI('0x392e693e0222e07e88fbf2cf7107e2dfac8af678', 'Madeira.csv')
+    #get_fund_ROI('0x392e693e0222e07e88fbf2cf7107e2dfac8af678', 'Madeira.csv')
 
     now = datetime.now()
     dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
