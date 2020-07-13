@@ -34,7 +34,7 @@ def get_fund_ROI(address, file_name):
     
     cg = CoinGeckoAPI()
 
-    data = cg.get_coin_market_chart_by_id('bitcoin', 'usd', 500)
+    data = cg.get_coin_market_chart_by_id('bitcoin', 'eth', 500)
 
     dates = [datetime.fromtimestamp(data['prices'][i][0] / 1000).strftime('%Y-%m-%d') for i in range(len(data['prices']))]
     price  = [data['prices'][i][1] for i in range(len(data['prices']))]
@@ -56,7 +56,7 @@ def get_fund_ROI(address, file_name):
     
 def main():
     get_fund_ROI('0xCB60D600160D005845Ec999f64266D5608fd8943', 'Fnd.csv')
-    #get_fund_ROI('0x392e693e0222e07e88fbf2cf7107e2dfac8af678', 'Madeira.csv')
+    get_fund_ROI('0x9C49c053a8b9106024793516EE3c5562875A5C9a', 'Anastasia.csv')
 
     now = datetime.now()
     dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
