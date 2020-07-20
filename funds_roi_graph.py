@@ -57,6 +57,7 @@ def get_fund_ROI(address, file_name):
 def main():
     get_fund_ROI('0xCB60D600160D005845Ec999f64266D5608fd8943', 'Fnd.csv')
     get_fund_ROI('0x9C49c053a8b9106024793516EE3c5562875A5C9a', 'Anastasia.csv')
+    get_fund_ROI('0x0d9596Afc608B3322A17118A573750045F52C0B8', 'Malta.csv')
 
     now = datetime.now()
     dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
