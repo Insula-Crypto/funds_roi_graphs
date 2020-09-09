@@ -65,5 +65,25 @@ def main():
     f.write("Ran at " + dt_string + "\n")
     f.close() 
 
+
+def test():
+    fundToken = '0x36c4abec6166b5009b0abf493ef4500d76eb02d4'
+
+    sent = requests.get('https://api.bloxy.info/money_flow/transfers?address=0x0a27a978dfe58659d724ae96d9f25b7ed6b4fd97&chain=eth&token=0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2&direction=all&key=ACCunOMWYpmCp&format=table').json()
+    tokenDist = pd.DataFrame(sent)
+    investmentTx = tokenDist[tokenDist[3] == '0x0d9596afc608b3322a17118a573750045f52c0b8'][[1, 4, 6]]
+
+    # sent = requests.get('https://api.bloxy.info/widget/address_value_daily?address=' + '0x0d9596Afc608B3322A17118A573750045F52C0B8' + '&currency=ETH&key=ACCunOMWYpmCp&format=table&price_currency=USD').json()
+    # df1 = pd.DataFrame(sent)
+    # df1.rename(columns={0:'Date-USD', 11: 'ROI'}, inplace=True)
+    # df1['ROI-USD'] = df1.ROI.cumsum()
+    # print(df1)
+
+    investmentTx[1] = pd.to_datetime(investmentTx[1]).dt.strftime('%y-%m-%d')
+    # investmentTx[1] = investmentTx[1].dt.strftime('%y-%m-%d')
+    print(investmentTx)
+
+
+
 if __name__ == '__main__':
-    main()
+    test()

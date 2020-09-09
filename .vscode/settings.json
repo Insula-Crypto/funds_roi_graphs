@@ -1,3 +1,6 @@
 {
-    "python.pythonPath": "C:\\Users\\Romain-PC\\Anaconda3\\envs\\insula\\python.exe"
+    "python.pythonPath": "../get_Investment/Insula/bin/python",
+    "python.linting.pylintEnabled": false,
+    "python.linting.pycodestyleEnabled": true,
+    "python.linting.enabled": true
 }
