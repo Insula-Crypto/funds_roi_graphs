@@ -4,8 +4,6 @@ from datetime import datetime
 import yfinance as yf
 import numpy as np
 from pycoingecko import CoinGeckoAPI
-import datetime
-from matplotlib import pyplot as plt 
 
 def get_fund_ROI(address, file_name):
     sent = requests.get('https://api.bloxy.info/widget/address_value_daily?address=' + address + '&currency=ETH&key=ACCunOMWYpmCp&format=table&price_currency=USD').json()
@@ -38,7 +36,7 @@ def get_fund_ROI(address, file_name):
 
     data = cg.get_coin_market_chart_by_id('bitcoin', 'eth', 500)
 
-    dates = [datetime.datetime.fromtimestamp(data['prices'][i][0] / 1000).strftime('%Y-%m-%d') for i in range(len(data['prices']))]
+    dates = [datetime.fromtimestamp(data['prices'][i][0] / 1000).strftime('%Y-%m-%d') for i in range(len(data['prices']))]
     price  = [data['prices'][i][1] for i in range(len(data['prices']))]
 
     df_data = {'BTC-ETH': price, 'Date' : dates} 
@@ -61,7 +59,7 @@ def main():
     get_fund_ROI('0x9C49c053a8b9106024793516EE3c5562875A5C9a', 'Anastasia.csv')
     Malta('Malta.csv')
 
-    now = datetime.datetime.now()
+    now = datetime.now()
     dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
     f = open("run_log.txt","a")
     f.write("Ran at " + dt_string + "\n")
@@ -126,10 +124,10 @@ def Malta(file_name):
     df = df[['ROI-USD', 'ROI-ETH', 'CMC200-USD']]
     
     cg = CoinGeckoAPI()
-
+    
     data = cg.get_coin_market_chart_by_id('bitcoin', 'eth', 500)
 
-    dates = [datetime.datetime.fromtimestamp(data['prices'][i][0] / 1000).strftime('%Y-%m-%d') for i in range(len(data['prices']))]
+    dates = [datetime.fromtimestamp(data['prices'][i][0] / 1000).strftime('%Y-%m-%d') for i in range(len(data['prices']))]
     price  = [data['prices'][i][1] for i in range(len(data['prices']))]
 
     df_btc = pd.DataFrame({'BTC-ETH': price}, index=dates)
