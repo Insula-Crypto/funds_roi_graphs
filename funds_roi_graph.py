@@ -82,6 +82,17 @@ def Malta(file_name):
             nav.append(int(data['fundCalculationsHistories'][i]['nav']) / 1e18)
             timestamp.append((int(data['fundCalculationsHistories'][i]['timestamp'])))
 
+    while (len(data['fundCalculationsHistories']) == 100):
+        jsonData = '{"query": "{fundCalculationsHistories(where: {fund: \\"0x26491fc7da30b35d818de45982fb1de4f65ed8f5\\", timestamp_gt:\\"' + str(timestamp[-1]+1) + '\\"}) { nav, timestamp, totalSupply, source}}"}'
+        data = requests.post('https://api.thegraph.com/subgraphs/name/melonproject/melon', data = jsonData).json()['data']
+
+        for i in range(len(data['fundCalculationsHistories'])):
+            if (data['fundCalculationsHistories'][i]['source'] == 'priceUpdate'):
+                roi.append(int(data['fundCalculationsHistories'][i]['nav']) / int(data['fundCalculationsHistories'][i]['totalSupply']))
+                nav.append(int(data['fundCalculationsHistories'][i]['nav']) / 1e18)
+                timestamp.append((int(data['fundCalculationsHistories'][i]['timestamp'])))
+
+
     df1 = pd.DataFrame({'NAV': nav, 'ROI-ETH': roi}, index=timestamp)
 
 

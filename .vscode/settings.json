@@ -1,5 +1,5 @@
 {
-    "python.pythonPath": "../get_Investment/Insula/bin/python",
+    "python.pythonPath": "C:\\ProgramData\\Miniconda3\\python.exe",
     "python.linting.pylintEnabled": false,
     "python.linting.pycodestyleEnabled": true,
     "python.linting.enabled": true
