@@ -157,4 +157,4 @@ def Malta(file_name):
     df.to_csv(file_name, index=True)
 
 if __name__ == '__main__':
-    main()
+    # main()
