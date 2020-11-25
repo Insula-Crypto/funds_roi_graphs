@@ -53,17 +53,6 @@ def get_fund_ROI(address, file_name):
     df.drop(df.tail(1).index,inplace=True)
     
     df.to_csv(file_name, index=True)
-    
-def main():
-    get_fund_ROI('0xCB60D600160D005845Ec999f64266D5608fd8943', 'Fnd.csv')
-    get_fund_ROI('0x9C49c053a8b9106024793516EE3c5562875A5C9a', 'Anastasia.csv')
-    Malta('Malta.csv')
-
-    now = datetime.now()
-    dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
-    f = open("run_log.txt","a")
-    f.write("Ran at " + dt_string + "\n")
-    f.close() 
 
 
 def Malta(file_name):
@@ -106,6 +95,14 @@ def Malta(file_name):
     for i in range(len(data['assetPriceHistories'])):
         price.append(int(data['assetPriceHistories'][i]['price']) / 1e18)
         timestamp.append((int(data['assetPriceHistories'][i]['timestamp'])))
+
+    while (len(data['assetPriceHistories']) == 100):
+        jsonData = '{"query": "{assetPriceHistories(where: {asset: \\"0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48\\", , timestamp_gt: \\"' + str(timestamp[-1]+1) + '\\"}) {price, timestamp}}"}'
+        data = requests.post('https://api.thegraph.com/subgraphs/name/melonproject/melon', data = jsonData).json()['data']
+
+        for i in range(len(data['assetPriceHistories'])):
+            price.append(int(data['assetPriceHistories'][i]['price']) / 1e18)
+            timestamp.append((int(data['assetPriceHistories'][i]['timestamp'])))
 
     df2 = pd.DataFrame(price, index=timestamp, columns=['USD-ETH'])
 
@@ -156,5 +153,15 @@ def Malta(file_name):
     
     df.to_csv(file_name, index=True)
 
+def main():
+    get_fund_ROI('0xCB60D600160D005845Ec999f64266D5608fd8943', 'Fnd.csv')
+    Malta('Malta.csv')
+
+    now = datetime.now()
+    dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+    f = open("run_log.txt","a")
+    f.write("Ran at " + dt_string + "\n")
+    f.close() 
+
 if __name__ == '__main__':
-    # main()
+    main()
